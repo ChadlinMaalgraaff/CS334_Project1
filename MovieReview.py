@@ -72,9 +72,8 @@ def fullReview(reviewList):
     return review
 
 
+# displfrom vaderSentiment.vaderSentiment import SentimentIntensityAnalyzerays the movie title, opening date, date updated, author of review, & full movie review
 def display(obj, num):
-    # displfrom vaderSentiment.vaderSentiment import SentimentIntensityAnalyzerays the movie title, opening date, date updated, author of review, & full movie review
-
     url = obj['link']['url']
     pageError = False
     fullReview = ''
@@ -124,13 +123,14 @@ def display(obj, num):
     print(' ')
 
 
+# Displays the list of objects
 def displayList(obj, length):
     for i in range(0, length):
         display(obj[i], i+1)
 
 
+# sorts the list of reviews in order from most recent to least recent: DESCENDING ORDER
 def sortReviews(obj, length):
-    # sorts the list of reviews in order from most recent to least recent: DESCENDING ORDER
     for i in range(0, length - 1):
         for j in range(1, length):
             print('openingdate i: ' + str(obj[i]['opening_date']))
@@ -148,26 +148,14 @@ def sortReviews(obj, length):
                         obj[j] = temp
 
 
-def moveNoneToBottom(obj, length):
-    # Moves all null values to the bottom of the list
-    newList = []
-    newLength = 0
-    for i in range(0, length):
-        if (obj[i]['opening_date'] == None):
-            newList.insert(newLength, obj[i])
-        else:
-            newList.insert(0, obj[i])
-        newLength = newLength + 1
-    for j in range(0, newLength):
-        obj[j] = newList[j]
-
-
+# Sets all openings dates that has None to 0000-00-00
 def adjustNoneValues(objList):
     for obj in objList:
         if (obj['opening_date'] == None):
             obj['opening_date'] = '0000-00-00'
 
 
+# Displays the movie names and dates
 def printDates(obj, length):
     for i in range(0, length):
         print('Movie ' + str(obj[i]['display_title']) + ' ' + str(i) + ': ')
@@ -185,13 +173,11 @@ def printDates(obj, length):
             print('Date updated: ' + 'None')
         print(' ')
 
+
 # Using Vader to do a sentimental analysis
-
-
 def sentiment_analyzer_scores(sentence):
     analyser = SentimentIntensityAnalyzer()
     score = analyser.polarity_scores(sentence)
-    #print("{:-<40} {}".format(sentence, str(score)))
     return score
 
 
@@ -202,34 +188,18 @@ status_code = reviews.status_code
 num_results = reviews.json()['num_results']
 has_more = reviews.json()['has_more']
 results = reviews.json()['results']
-# moveNoneToBottom(results, num_results)  # Move null values to bottom first
 
+# Changing opening dates with None to 0000-00-00
 adjustNoneValues(results)
-# Copy the first 15 results from results to list
+
+# Copy the results from results to list
 list = []
 for i in range(0, 20):
     list.append(results[i])
+
 # Sorts list in Descending order
 list = sorted(list, key=lambda k: (
     k['opening_date'], k['date_updated']), reverse=True)
 
-for item in list:
-    print(' ')
-    print(str(item['display_title']))
-    print(str(item['opening_date']))
-    print(str(item['date_updated']))
-    print(' ')
-
+# Display the list of results
 displayList(list, 15)
-
-#print(' ')
-# print(str(test_set))
-
-# train classifier
-# make a function that takes each word in the doc, places it in a tuple ('word', True), and places it in a list. Do this for every word; basically creates a dictionary of words
-# use function classifier.classify(dictionaryOfWords)
-
-# print('Classifier: ' +
-#      classifier.classify(wordDictionary("Good. Love the movie.")))
-
-#printDates(results, 20)

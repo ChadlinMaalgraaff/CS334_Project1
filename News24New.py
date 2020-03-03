@@ -14,6 +14,7 @@ def displayPage(headline, pTags):
 # ------------------------------------------------------------------------------
 
 
+# Web version
 pageError = False
 try:
     requestWeb = requests.get('https://www.news24.com/TopStories')
@@ -49,31 +50,32 @@ if (pageError != True):
 
 # ------------------------------------------------------------------------------
 
-    linksMobile = []
-    for link in soupMobile.select('[href]'):
-        linksMobile.append(link['href'])
+# Mobile version
+linksMobile = []
+for link in soupMobile.select('[href]'):
+    linksMobile.append(link['href'])
 
-    urlMobile = linksMobile[9]
+urlMobile = linksMobile[9]
 
-    try:
-        requestMostReadMobile = requests.get(urlMobile)
-    except:
-        print("An error occured trying to connect to most read page.")
-        pageError = True
+try:
+    requestMostReadMobile = requests.get(urlMobile)
+except:
+    print("An error occured trying to connect to most read page.")
+    pageError = True
 
-    if (pageError != True):
-        soupMostReadMobile = BeautifulSoup(
-            requestMostReadMobile.text, 'html.parser')
+if (pageError != True):
+    soupMostReadMobile = BeautifulSoup(
+        requestMostReadMobile.text, 'html.parser')
 
-        all_p_tagsMobile = soupMostReadMobile.find_all('p')
+    all_p_tagsMobile = soupMostReadMobile.find_all('p')
 
-        articleBodyText_pTagsMobile = []
-        artcleHeading = soupMostReadMobile.find('h1').text
+    articleBodyText_pTagsMobile = []
+    artcleHeading = soupMostReadMobile.find('h1').text
 
-        for tag in all_p_tagsMobile:
-            if (tag.find('a') == None and tag.find('img') == None):
-                articleBodyText_pTagsMobile.append(tag)
+    for tag in all_p_tagsMobile:
+        if (tag.find('a') == None and tag.find('img') == None):
+            articleBodyText_pTagsMobile.append(tag)
 
-        displayPage(artcleHeading, articleBodyText_pTagsMobile)
+    displayPage(artcleHeading, articleBodyText_pTagsMobile)
 
 # ------------------------------------------------------------------------------
