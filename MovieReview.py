@@ -17,6 +17,7 @@ from nltk.tokenize import word_tokenize
 
 # Vader Sentiment Intensity Analyser
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+analyser = SentimentIntensityAnalyzer()
 
 # ----------- datacamp -------------
 documents = [(list(movie_reviews.words(fileid)), category)
@@ -116,6 +117,11 @@ def display(obj, num):
     print(' ')
     print('Review: \n' + fullReview)
     print(' ')
+    vaderScore = analyser.polarity_scores(fullReview)
+    print('Vader score Compound: ' + str(vaderScore['compound']))
+    print('Vader score Neutral: ' + str(vaderScore['neu']))
+    print('Vader score Negative: ' + str(vaderScore['neg']))
+    print('Vader score Positive: ' + str(vaderScore['pos']))
     print('Sentimental Analysis(Vader): ' + sentimentVader)
     print(' ')
     print('Sentimental Analysis(DataCamp): ' +
