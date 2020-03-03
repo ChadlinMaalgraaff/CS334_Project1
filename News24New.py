@@ -4,6 +4,7 @@ import requests
 # ------------------------------------------------------------------------------
 
 
+# Neatly displays the page
 def displayPage(headline, pTags):
     print(' ')
     print(str(headline) + '\n' + '_'*len(headline) + '\n')
@@ -32,7 +33,7 @@ if (pageError != True):
     url = linksWeb[0].attrs['href']
 
     try:
-        requestMostRead = requests.get(url)
+        requestMostRead = requests.get(str(url))
     except:
         print("An error occured trying to connect to most read page.")
         pageError = True
@@ -40,42 +41,55 @@ if (pageError != True):
     if (pageError != True):
         soupMostRead = BeautifulSoup(requestMostRead.text, 'html.parser')
 
-        all_p_tags = soupMostRead.find_all('p')
+        try:
+            divArticleBody = soupMostRead.find(
+                'div', attrs={'class': 'article'})
+        except:
+            pageError = True
 
-        articleBodyText_pTags = []
+        if (pageError != True):
 
-        for tag in all_p_tags:
-            if (tag.find('a') == None and tag.find('live') == None and tag.find('img') == None and tag.find('span') == None):
-                articleBodyText_pTags.append(tag)
+            articleBodyText_pTagsWeb = []
+
+            if (divArticleBody != None):
+                article_p_tags = divArticleBody.find_all('p')
+
+                for tag in article_p_tags:
+                    if (tag.find('a') == None):
+                        articleBodyText_pTagsWeb.append(tag)
+
+                headlineWeb = divArticleBody.find('h1')
+
+                #displayPage(headlineWeb.text, articleBodyText_pTagsWeb)
 
 # ------------------------------------------------------------------------------
 
-# Mobile version
-linksMobile = []
-for link in soupMobile.select('[href]'):
-    linksMobile.append(link['href'])
+    # Mobile version
+    linksMobile = []
+    for link in soupMobile.select('[href]'):
+        linksMobile.append(link['href'])
 
-urlMobile = linksMobile[9]
+    urlMobile = linksMobile[9]
 
-try:
-    requestMostReadMobile = requests.get(urlMobile)
-except:
-    print("An error occured trying to connect to most read page.")
-    pageError = True
+    try:
+        requestMostReadMobile = requests.get(urlMobile)
+    except:
+        print("An error occured trying to connect to most read page.")
+        pageError = True
 
-if (pageError != True):
-    soupMostReadMobile = BeautifulSoup(
-        requestMostReadMobile.text, 'html.parser')
+    if (pageError != True):
+        soupMostReadMobile = BeautifulSoup(
+            requestMostReadMobile.text, 'html.parser')
 
-    all_p_tagsMobile = soupMostReadMobile.find_all('p')
+        all_p_tagsMobile = soupMostReadMobile.find_all('p')
 
-    articleBodyText_pTagsMobile = []
-    artcleHeading = soupMostReadMobile.find('h1').text
+        articleBodyText_pTagsMobile = []
+        artcleHeading = soupMostReadMobile.find('h1')
 
-    for tag in all_p_tagsMobile:
-        if (tag.find('a') == None and tag.find('img') == None):
-            articleBodyText_pTagsMobile.append(tag)
+        for tag in all_p_tagsMobile:
+            if (tag.find('a') == None and tag.find('img') == None):
+                articleBodyText_pTagsMobile.append(tag)
 
-    displayPage(artcleHeading, articleBodyText_pTagsMobile)
+        displayPage(artcleHeading.text, articleBodyText_pTagsMobile)
 
 # ------------------------------------------------------------------------------
