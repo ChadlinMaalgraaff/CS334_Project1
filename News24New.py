@@ -1,6 +1,19 @@
 from bs4 import BeautifulSoup
 import requests
 
+# ------------------------------------------------------------------------------
+
+
+def displayPage(headline, pTags):
+    print(' ')
+    print(str(headline) + '\n' + '_'*len(headline) + '\n')
+    for p in pTags:
+        print(str(p.text))
+        print(' ')
+
+# ------------------------------------------------------------------------------
+
+
 pageError = False
 try:
     requestWeb = requests.get('https://www.news24.com/TopStories')
@@ -34,17 +47,13 @@ if (pageError != True):
             if (tag.find('a') == None and tag.find('live') == None and tag.find('img') == None and tag.find('span') == None):
                 articleBodyText_pTags.append(tag)
 
-        # for bodyTag in articleBodyText_pTags:
-        #    print(' ')
-        #    print(str(bodyTag))
-        #    print(' ')
+# ------------------------------------------------------------------------------
 
     linksMobile = []
     for link in soupMobile.select('[href]'):
         linksMobile.append(link['href'])
 
     urlMobile = linksMobile[9]
-    print('urlMobile: ' + urlMobile)
 
     try:
         requestMostReadMobile = requests.get(urlMobile)
@@ -65,10 +74,6 @@ if (pageError != True):
             if (tag.find('a') == None and tag.find('img') == None):
                 articleBodyText_pTagsMobile.append(tag)
 
-        print(str(artcleHeading))
-        print(' ')
+        displayPage(artcleHeading, articleBodyText_pTagsMobile)
 
-        for p in articleBodyText_pTagsMobile:
-            print(' ')
-            print(str(p))
-            print(' ')
+# ------------------------------------------------------------------------------
